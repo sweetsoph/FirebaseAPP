@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, Image, Alert } fro
 import firebase from '../config/firebase';
 
 export default function Cadastro({ navigation }) {
+    const [id, setId] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
@@ -14,12 +15,13 @@ export default function Cadastro({ navigation }) {
         if (name != "" && email != "" && phone != "" && password != "" && confirmPassword != "") {
             if (password == confirmPassword) {
                 let users = await firebase.database().ref('users');
-                let chave = users.push().key;
-                users.child(chave).set({
+                setId(users.push().key)
+                users.child(id).set({
                     name: name,
                     email: email,
                     phone: phone,
                     password: password,
+                    id: id,
                 })
                 navigation.navigate("Home");
             } else {
@@ -81,6 +83,12 @@ export default function Cadastro({ navigation }) {
                     }}>
                         <Text style={{ color: "white", fontSize: 16 }}>Enviar</Text>
                     </TouchableOpacity>
+                    <Text>ou</Text>
+                    <TouchableOpacity style={styles.btnLogin} onPress={() => {
+                        navigation.navigate("Login");
+                    }}>
+                        <Text style={{ color: "#00476F", fontSize: 16 }}>Já tenho conta</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
@@ -102,7 +110,7 @@ const styles = StyleSheet.create({
     },
     cadastroContainer: {
         width: "90%",
-        height: 390,
+        height: 460,
         alignItems: "center",
         borderWidth: 2,
         borderBottomWidth: 3,
@@ -133,6 +141,16 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#00476F",
+        marginTop: 5,
+    },
+    btnLogin: {
+        height: 40,
+        width: "100%",
+        borderRadius: 5,
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: "#00476F",
         marginTop: 5,
     }
 });
